@@ -1,0 +1,7 @@
+{
+  "name": "react-ogs",
+  "version": "1.0.0",
+  "bin": {
+    "react-ogs": "./react-ogs.sh"
+  }
+}
