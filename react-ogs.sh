@@ -74,7 +74,7 @@ mkdir -p src/{assets,components,constants,hooks,layouts,pages,routes,services,st
 mkdir -p public
 
 # 6. routes placeholder
-cat > src/routes/index.tsx <<'EOF'
+cat > src/routes/route.tsx <<'EOF'
 // Route configuration placeholder
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -286,6 +286,30 @@ commit-msg:
         "commitlint.sh":
             runner: bash
 EOF
+
+cat > .prettierrc <<'EOF'
+{
+  "arrowParens": "always",
+  "bracketSameLine": false,
+  "bracketSpacing": true,
+  "embeddedLanguageFormatting": "auto",
+  "htmlWhitespaceSensitivity": "css",
+  "insertPragma": false,
+  "jsxSingleQuote": false,
+  "printWidth": 130,
+  "proseWrap": "preserve",
+  "quoteProps": "as-needed",
+  "requirePragma": false,
+  "semi": true,
+  "singleAttributePerLine": false,
+  "singleQuote": false,
+  "tabWidth": 4,
+  "trailingComma": "es5",
+  "useTabs": false,
+  "vueIndentScriptAndStyle": false
+}
+EOF
+echo "create .prettierrc successfully"
 
 cat > .lefthook/commit-msg/commitlint.sh <<'EOF'
 #!/bin/bash
