@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 # ชื่อไฟล์: react-ogs
 # ใช้งาน: ./react-ogs <project-name>
 echo "🚀 Creating project: $1"
@@ -11,7 +11,7 @@ fi
 
 # Libraries
 LIBS="react-redux @reduxjs/toolkit react-router-dom antd @ant-design/icons"
-DEV_LIBS="tailwindcss postcss autoprefixer eslint prettier eslint-config-prettier eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh @eslint/js typescript-eslint globals lefthook commitlint"
+DEV_LIBS="tailwindcss @tailwindcss/postcss postcss autoprefixer eslint prettier eslint-config-prettier eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh @eslint/js typescript-eslint globals lefthook commitlint"
 
 echo "🚀 Creating React Vite project: $APP_NAME"
 
@@ -25,31 +25,34 @@ npm install -D $DEV_LIBS
 
 # 3. Tailwind + PostCSS
 npx tailwindcss init -p
-cat > tailwind.config.js <<'EOF'
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: { extend: {} },
-  plugins: [],
-}
+cat > tailwind.config.ts <<'EOF'
+// tailwind.config.ts
+import { Config } from "tailwindcss";
+
+const config: Config = {
+    content: ["./src/**/*.{html,ts,tsx}"],
+    theme: {
+        extend: {},
+    },
+    plugins: [],
+};
+
+export default config;
+
 EOF
 
 cat > postcss.config.js <<'EOF'
 export default {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
+    '@tailwindcss/postcss': {},
   },
 }
+
 EOF
 
 cat > src/index.css <<'EOF'
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@config '../tailwind.config.ts';
 EOF
 
 # 4. main.tsx
@@ -73,9 +76,12 @@ mkdir -p public
 # 6. routes placeholder
 cat > src/routes/index.tsx <<'EOF'
 // Route configuration placeholder
-export default function AppRoutes() {
-  return null;
-}
+import { createBrowserRouter } from 'react-router-dom';
+
+const route = createBrowserRouter([]);
+
+export default route;
+
 EOF
 
 # 7. store setup
@@ -94,19 +100,21 @@ EOF
 
 # 8. App.tsx
 cat > src/App.tsx <<'EOF'
-import AppRoutes from "@routes";
 import { Provider } from "react-redux";
 import { store } from "@store";
+import { RouterProvider } from "react-router-dom";
+import AppRoutes from "@routes";
 
 function App() {
   return (
     <Provider store={store}>
-      <AppRoutes />
+      <RouterProvider router={AppRoutes} />
     </Provider>
   );
 }
 
 export default App;
+
 EOF
 
 # 9. Vite config alias
@@ -157,11 +165,13 @@ cat > tsconfig.app.json <<'EOF'
       "@components/*": ["components/*"],
       "@components": ["components"],
       "@store/*": ["store/*"],
+      "@store": ["store"],
       "@layouts/*": ["layouts/*"],
       "@constants/*": ["constants/*"],
       "@assets/*": ["assets/*"],
       "@utils/*": ["utils/*"],
       "@routes/*": ["routes/*"],
+      "@routes": ["routes"],
       "@pages/*": ["pages/*"],
       "@hooks/*": ["hooks/*"],
       "@type/*": ["types/*"]
