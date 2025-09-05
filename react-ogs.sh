@@ -16,7 +16,7 @@ DEV_LIBS="tailwindcss @tailwindcss/postcss postcss autoprefixer eslint prettier 
 echo "🚀 Creating React Vite project: $APP_NAME"
 
 # 1. สร้างโปรเจกต์ Vite + React + TS
-npm create vite@5.0.11 $APP_NAME -- --template react-ts
+npm create vite@latest $APP_NAME -- --template react-ts
 cd $APP_NAME
 
 # 2. ติดตั้ง dependencies
