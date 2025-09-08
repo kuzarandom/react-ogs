@@ -253,7 +253,7 @@ fs.writeFileSync('.prettierrc', `{
   "trailingComma": "es5",
   "useTabs": false,
   "vueIndentScriptAndStyle": false
-};
+}
 `);
 console.log("✅ Prettier config created.");
 
