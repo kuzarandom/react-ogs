@@ -41,6 +41,11 @@ export default config;
 
 EOF
 
+# ลบ tailwind.config.js ถ้ามี
+if [ -f tailwind.config.js ]; then
+  rm tailwind.config.js
+fi
+
 cat > postcss.config.js <<'EOF'
 export default {
   plugins: {
