@@ -24,7 +24,7 @@ process.chdir(APP_NAME);
 
 // 2. Install dependencies
 const LIBS = [
-    'react-redux', '@reduxjs/toolkit', 'react-router-dom', 'antd', '@ant-design/icons'
+    'react-redux', '@reduxjs/toolkit', 'react-router-dom', 'antd', '@ant-design/icons', "clsx"
 ].join(' ');
 const DEV_LIBS = [
     'tailwindcss', '@tailwindcss/postcss', 'postcss', 'autoprefixer',
@@ -36,7 +36,7 @@ execSync(`npm install ${LIBS}`, { stdio: 'inherit' });
 execSync(`npm install -D ${DEV_LIBS}`, { stdio: 'inherit' });
 
 // 3. Tailwind + PostCSS
-execSync('npx tailwindcss init -p', { stdio: 'inherit' });
+// execSync('npx tailwindcss init -p', { stdio: 'inherit' });
 fs.writeFileSync('tailwind.config.ts', 
 `import { Config } from "tailwindcss";
 
@@ -100,7 +100,33 @@ export default App;
 console.log("✅ App.tsx created.");
 
 // 9. Vite config alias
-fs.writeFileSync('vite.config.ts', `import { defineConfig } from 'vite';\nimport react from '@vitejs/plugin-react';\nimport path from 'path';\n\nexport default defineConfig({\n  plugins: [react()],\n  resolve: {\n    alias: {\n      '@assets': path.resolve(__dirname, './src/assets'),\n      '@components': path.resolve(__dirname, './src/components'),\n      '@constants': path.resolve(__dirname, './src/constants'),\n      '@hooks': path.resolve(__dirname, './src/hooks'),\n      '@layouts': path.resolve(__dirname, './src/layouts'),\n      '@pages': path.resolve(__dirname, './src/pages'),\n      '@routes': path.resolve(__dirname, './src/routes'),\n      '@services': path.resolve(__dirname, './src/services'),\n      '@store': path.resolve(__dirname, './src/store'),\n      '@utils': path.resolve(__dirname, './src/utils'),\n      '@types': path.resolve(__dirname, './src/types'),\n    },\n  },\n});\n`);
+fs.writeFileSync('vite.config.ts', `import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@assets': path.resolve(__dirname, './src/assets'),
+      '@components': path.resolve(__dirname, './src/components'),
+      '@constants': path.resolve(__dirname, './src/constants'),
+      '@hooks': path.resolve(__dirname, './src/hooks'),
+      '@layouts': path.resolve(__dirname, './src/layouts'),
+      '@pages': path.resolve(__dirname, './src/pages'),
+      '@routes': path.resolve(__dirname, './src/routes'),
+      '@services': path.resolve(__dirname, './src/services'),
+      '@store': path.resolve(__dirname, './src/store'),
+      '@utils': path.resolve(__dirname, './src/utils'),
+      '@types': path.resolve(__dirname, './src/types'),
+    },
+  },
+});
+`);
 console.log("✅ Vite config with path aliases created.");
 
 // 10. TSConfig
