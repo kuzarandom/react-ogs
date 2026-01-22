@@ -15,6 +15,8 @@ if (!APP_NAME) {
     process.exit(1);
 }
 
+  console.log('ℹ️ Note: This tool no longer runs npm install; it only writes package.json dependencies.');
+
 const viteSpecifier = VITE_VERSION ? `@${VITE_VERSION}` : '@latest';
 console.log(`🚀 Creating React Vite project: ${APP_NAME} (Vite ${VITE_VERSION})`);
 
@@ -22,18 +24,78 @@ console.log(`🚀 Creating React Vite project: ${APP_NAME} (Vite ${VITE_VERSION}
 execSync(`npm create vite${viteSpecifier} ${APP_NAME} -- --template react-ts`, { stdio: 'inherit' });
 process.chdir(APP_NAME);
 
-// 2. Install dependencies
-const LIBS = [
-    'react-redux', '@reduxjs/toolkit', 'react-router-dom', 'antd', '@ant-design/icons', "clsx"
-].join(' ');
-const DEV_LIBS = [
-    'tailwindcss', '@tailwindcss/postcss', 'postcss', 'autoprefixer',
-    'eslint', 'prettier', 'eslint-config-prettier', 'eslint-plugin-react',
-    'eslint-plugin-react-hooks', 'eslint-plugin-react-refresh', '@eslint/js',
-    'typescript-eslint', 'globals', 'lefthook', 'commitlint'
-].join(' ');
-execSync(`npm install ${LIBS}`, { stdio: 'inherit' });
-execSync(`npm install -D ${DEV_LIBS}`, { stdio: 'inherit' });
+// 2. Write dependencies into package.json (do not run npm install)
+const DEPENDENCIES = {
+  '@ant-design/icons': '^5.6.1',
+  '@dnd-kit/core': '^6.3.1',
+  '@dnd-kit/modifiers': '^9.0.0',
+  '@dnd-kit/sortable': '^10.0.0',
+  '@reduxjs/toolkit': '^2.5.0',
+  '@tailwindcss/vite': '^4.0.0',
+  'antd': '^5.23.0',
+  'clsx': '^2.1.1',
+  'css-filter-converter': '^1.0.110',
+  'dayjs': '^1.11.13',
+  'framer-motion': '^12.4.2',
+  'lodash': '^4.17.21',
+  'react': '^18.3.1',
+  'react-countup': '^6.5.3',
+  'react-dom': '^18.3.1',
+  'react-error-boundary': '^6.1.0',
+  'react-icons': '^5.5.0',
+  'react-redux': '^9.2.0',
+  'react-router-dom': '^7.1.1',
+  'react-thai-address': '^1.0.6'
+};
+
+const DEV_DEPENDENCIES = {
+  '@commitlint/cli': '^19.8.0',
+  '@commitlint/config-conventional': '^19.8.0',
+  '@eslint/js': '^9.17.0',
+  '@tailwindcss/postcss': '^4.0.0',
+  '@types/lodash': '^4.17.16',
+  '@types/node': '^22.10.5',
+  '@types/react': '^18.3.18',
+  '@types/react-dom': '^18.3.5',
+  '@vitejs/plugin-react': '^4.3.4',
+  'eslint': '^9.17.0',
+  'eslint-plugin-react': '^7.37.3',
+  'eslint-plugin-react-hooks': '^5.0.0',
+  'eslint-plugin-react-refresh': '^0.4.16',
+  'globals': '^15.14.0',
+  'lefthook': '~1.5.5',
+  'postcss': '^8.4.49',
+  'prettier': '3.4.2',
+  'sass-embedded': '^1.93.0',
+  'tailwindcss': '^4.0.0',
+  'typescript': '~5.6.2',
+  'typescript-eslint': '^8.45.2',
+  'vite': '^6.0.5'
+};
+
+function readJson(filePath) {
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+}
+
+function writeJson(filePath, data) {
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n');
+}
+
+function mergeDeps(pkg, deps, fieldName) {
+  pkg[fieldName] = pkg[fieldName] || {};
+  for (const [name, version] of Object.entries(deps)) {
+    pkg[fieldName][name] = version;
+  }
+}
+
+const pkgPath = path.join(process.cwd(), 'package.json');
+const pkg = readJson(pkgPath);
+mergeDeps(pkg, DEPENDENCIES, 'dependencies');
+mergeDeps(pkg, DEV_DEPENDENCIES, 'devDependencies');
+pkg.scripts = pkg.scripts || {};
+pkg.scripts.prepare = pkg.scripts.prepare || 'lefthook install';
+writeJson(pkgPath, pkg);
+console.log('✅ package.json updated (dependencies written, no npm install).');
 
 // 3. Tailwind + PostCSS
 // execSync('npx tailwindcss init -p', { stdio: 'inherit' });
